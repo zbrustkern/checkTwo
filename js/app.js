@@ -133,7 +133,7 @@ function updateMessage() {
     } else if (winner === false && tie === true) {
         messageEl.innerText = ("It's a tie!")
     } else {
-        messageEl.innerText = (`${turn} is the winner!`)
+        messageEl.innerText = (`Player ${winner} is the winner!`)
     }
 }
 
@@ -143,41 +143,41 @@ function render() {
 }
 
 function handleClick(event) {
+    checkForTie()
+    if (winner === true) return
+
     if (isFirstClick) {
         firstClickOnSquare(event.target)
     } else {
         secondClickOnSquare(event.target)
     }
-    if (winner === true) return
-    checkForWinner()
-    checkForTie()
     render()
-}
-
-function placePiece(squareClicked) {
-    board[squareClicked.id] = turn
 }
 
 function firstClickOnSquare (squareClicked) {
     if (board[squareClicked.id].toLowerCase() == turn) {
-        console.log("first square clicked")
-        squareClicked.classList.add = "clicked"
+        squareClicked.classList.add("clicked")
         playerPiece = board[squareClicked.id]
         isFirstClick = false
-        firstClickedSquare = squareClicked.id
+        firstClickedSquare = squareClicked
     }
 }
 
 function secondClickOnSquare(squareClicked) {
-    console.log("second square clicked")
     // if (!checkValidMove) return
-    squareClicked.classList.remove = "clicked"
-    board[firstClickedSquare] = ''
-    pieceJump(firstClickedSquare, squareClicked.id)
+    if (squareClicked != firstClickedSquare) {
+    board[firstClickedSquare.id] = ''
+    firstClickedSquare.classList.remove("clicked")
+    pieceJump(firstClickedSquare.id, squareClicked.id)
     kingMe(squareClicked)
     board[squareClicked.id] = playerPiece
     isFirstClick = true
     switchPlayerTurn()
+    } else {
+        isFirstClick = true
+        firstClickedSquare.classList.remove("clicked")
+    }
+    checkForWinner()
 }
 
 function pieceJump(first, second) {
@@ -210,8 +210,8 @@ function checkValidMove() {
 }
 
 function checkForWinner() {
-    if (!board.includes('b' || "B")) winner = "w"
-    if (!board.includes('w' || "W")) winner = "b"
+    if (!(board.includes('b')) && !(board.includes( "B"))) winner = "w"
+    if (!(board.includes('w')) && !(board.includes( "W"))) winner = "b"
 }
 
 function checkForTie() {
