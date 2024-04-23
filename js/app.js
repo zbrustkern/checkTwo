@@ -44,7 +44,7 @@ const jumpCombos = [
     [47,61,54],
 
     // facing up
-    [52,43,50],
+    [57,43,50],
     [59,41,50],[59,45,52],
     [61,43,52],[61,47,54],
     [63,45,54],
@@ -116,15 +116,7 @@ function init() {
 }
 
 function updateBoard() {
-    board.forEach((sqr,idx) => {
-        if (sqr === "b") {
-            squareEls[idx].innerHTML = "b"
-        } else if (sqr === "w") {
-            squareEls[idx].innerHTML = "w"
-        } else {
-            squareEls[idx].innerText = sqr
-        }
-    })
+    board.forEach((sqr,idx) => squareEls[idx].innerHTML = sqr)
 }
 
 function updateMessage() {
@@ -143,7 +135,7 @@ function render() {
 }
 
 function handleClick(event) {
-    checkForTie()
+    // checkForTie()
     if (winner === true) return
     if (event.target.classList.contains('red')) return
     if (isFirstClick) {
@@ -166,10 +158,24 @@ function firstClickOnSquare (squareClicked) {
 
 function secondClickOnSquare(squareClicked) {
     // if (!checkValidMove) return
-    if (squareClicked != firstClickedSquare) {
-    if (board[squareClicked.id] !== '') return
-    if ((playerPiece === 'b') && (squareClicked.id > firstClickedSquare.id)) return
-    if ((playerPiece === 'w') && (squareClicked.id < firstClickedSquare.id)) return
+    if (squareClicked === firstClickedSquare) {
+        isFirstClick = true
+        firstClickedSquare.classList.remove("clicked")
+        return
+    }
+    if (board[squareClicked.id] != '') {
+        console.log("square not blank")
+        return
+    }
+    if ((playerPiece === 'b') && (Number(squareClicked.id) > Number(firstClickedSquare.id))) {
+        console.log("second square clicked validation failure")   
+        return
+    }
+    if ((playerPiece === 'w') && (Number(squareClicked.id) < Number(firstClickedSquare.id))) {
+        console.log("second square clicked validation failure")
+        return  
+    } 
+    
     board[firstClickedSquare.id] = ''
     firstClickedSquare.classList.remove("clicked")
     pieceJump(firstClickedSquare.id, squareClicked.id)
@@ -177,10 +183,6 @@ function secondClickOnSquare(squareClicked) {
     board[squareClicked.id] = playerPiece
     isFirstClick = true
     switchPlayerTurn()
-    } else {
-        isFirstClick = true
-        firstClickedSquare.classList.remove("clicked")
-    }
     checkForWinner()
 }
 
@@ -214,6 +216,7 @@ function checkValidMove() {
 function checkForWinner() {
     if (!(board.includes('b')) && !(board.includes( "B"))) winner = "w"
     if (!(board.includes('w')) && !(board.includes( "W"))) winner = "b"
+    if ((winner === "w") || (winner === "b")) displayEndModal()
 }
 
 function checkForTie() {
