@@ -145,7 +145,7 @@ function render() {
 function handleClick(event) {
     checkForTie()
     if (winner === true) return
-
+    if (event.target.classList.contains('red')) return
     if (isFirstClick) {
         firstClickOnSquare(event.target)
     } else {
@@ -155,6 +155,7 @@ function handleClick(event) {
 }
 
 function firstClickOnSquare (squareClicked) {
+    if (board[squareClicked.id] === '') return
     if (board[squareClicked.id].toLowerCase() == turn) {
         squareClicked.classList.add("clicked")
         playerPiece = board[squareClicked.id]
@@ -166,6 +167,9 @@ function firstClickOnSquare (squareClicked) {
 function secondClickOnSquare(squareClicked) {
     // if (!checkValidMove) return
     if (squareClicked != firstClickedSquare) {
+    if (board[squareClicked.id] !== '') return
+    if ((playerPiece === 'b') && (squareClicked.id > firstClickedSquare.id)) return
+    if ((playerPiece === 'w') && (squareClicked.id < firstClickedSquare.id)) return
     board[firstClickedSquare.id] = ''
     firstClickedSquare.classList.remove("clicked")
     pieceJump(firstClickedSquare.id, squareClicked.id)
@@ -182,9 +186,7 @@ function secondClickOnSquare(squareClicked) {
 
 function pieceJump(first, second) {
     jumpCombos.forEach((combo) => {
-        if ((combo[0] == first) && (combo[1] == second)) {
-            board[combo[2]] = ''
-        }
+        if ((combo[0] == first) && (combo[1] == second)) board[combo[2]] = ''
     })
 }
 
