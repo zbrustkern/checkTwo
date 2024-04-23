@@ -155,7 +155,7 @@ function handleClick(event) {
 }
 
 function firstClickOnSquare (squareClicked) {
-    if (board[squareClicked.id] === '') return
+    if (!(squareClicked.classList.contains('blk'))) return
     if (board[squareClicked.id].toLowerCase() == turn) {
         squareClicked.classList.add("clicked")
         playerPiece = board[squareClicked.id]
